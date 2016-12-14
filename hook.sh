@@ -12,6 +12,7 @@
 COMMIT_MSG_FILE="$1"
 COMMIT_MSG_LINES=
 ERRORS=
+EDITOR="$(git config core.editor)"
 
 RED=
 WHITE=
@@ -45,6 +46,7 @@ add_error() {
 #
 
 display_errors() {
+  echo -e "${WHITE}Please fix the following errors:${NC}"
   for i in "${!ERRORS[@]}"; do
     printf "%-74s ${WHITE}%s${NC}\n" "${COMMIT_MSG_LINES[$(($i-1))]}" "[line ${i}]"
     IFS=';' read -ra ERRORS_ARRAY <<< "${ERRORS[$i]}"
@@ -215,6 +217,8 @@ while true; do
 
   display_errors
 
-  exit 1;
+  echo -en "${WHITE}Press any key to edit the commit message.${NC}";
+  read REPLY < "$TTY";
+  $EDITOR "$COMMIT_MSG_FILE" < $TTY; continue
 
 done
