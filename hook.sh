@@ -6,7 +6,7 @@
 #
 # Version 0.5.0
 #
-# https://github.com/tommarshall/git-good-commit
+# https://github.com/noelmansour/git-good-commit
 #
 
 COMMIT_MSG_FILE="$1"
