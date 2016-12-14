@@ -1,7 +1,5 @@
 # git-good-commit
 
-[![Build Status](https://travis-ci.org/tommarshall/git-good-commit.svg?branch=master)](https://travis-ci.org/tommarshall/git-good-commit)
-
 Git hook to help you write good commit messages.
 
 Validates commit messages conform to six of [the seven rules of a great git commit message](http://chris.beams.io/posts/git-commit/), plus a couple of extras:
