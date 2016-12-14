@@ -11,7 +11,7 @@
 
 COMMIT_MSG_FILE="$1"
 COMMIT_MSG_LINES=
-WARNINGS=
+ERRORS=
 
 RED=
 WHITE=
@@ -31,24 +31,24 @@ set_colors() {
 }
 
 #
-# Add a warning with <line_number> and <msg>.
+# Add a error with <line_number> and <msg>.
 #
 
-add_warning() {
+add_error() {
   local line_number=$1
-  local warning=$2
-  WARNINGS[$line_number]="${WARNINGS[$line_number]}$warning;"
+  local error=$2
+  ERRORS[$line_number]="${ERRORS[$line_number]}$error;"
 }
 
 #
-# Output warnings.
+# Output errors.
 #
 
-display_warnings() {
-  for i in "${!WARNINGS[@]}"; do
+display_errors() {
+  for i in "${!ERRORS[@]}"; do
     printf "%-74s ${WHITE}%s${NC}\n" "${COMMIT_MSG_LINES[$(($i-1))]}" "[line ${i}]"
-    IFS=';' read -ra WARNINGS_ARRAY <<< "${WARNINGS[$i]}"
-    for ERROR in "${WARNINGS_ARRAY[@]}"; do
+    IFS=';' read -ra ERRORS_ARRAY <<< "${ERRORS[$i]}"
+    for ERROR in "${ERRORS_ARRAY[@]}"; do
       echo -e " ${RED}- ${ERROR}${NC}"
     done
   done
@@ -82,8 +82,8 @@ read_commit_message() {
 #
 
 validate_commit_message() {
-  # reset warnings
-  WARNINGS=()
+  # reset errors
+  ERRORS=()
 
   # capture the subject, and remove the 'squash! ' prefix if present
   COMMIT_SUBJECT=${COMMIT_MSG_LINES[0]/#squash! /}
@@ -99,25 +99,25 @@ validate_commit_message() {
   # ------------------------------------------------------------------------------
 
   test ${#COMMIT_MSG_LINES[@]} -lt 1 || test -z "${COMMIT_MSG_LINES[1]}"
-  test $? -eq 0 || add_warning 2 "Separate subject from body with a blank line"
+  test $? -eq 0 || add_error 2 "Separate subject from body with a blank line"
 
   # 2. Limit the subject line to 50 characters
   # ------------------------------------------------------------------------------
 
   test "${#COMMIT_SUBJECT}" -le 50
-  test $? -eq 0 || add_warning 1 "Limit the subject line to 50 characters (${#COMMIT_SUBJECT} chars)"
+  test $? -eq 0 || add_error 1 "Limit the subject line to 50 characters (${#COMMIT_SUBJECT} chars)"
 
   # 3. Capitalize the subject line
   # ------------------------------------------------------------------------------
 
   [[ ${COMMIT_SUBJECT} =~ ^[[:blank:]]*([[:upper:]]{1}[[:lower:]]*|[[:digit:]]+)([[:blank:]]|[[:punct:]]|$) ]]
-  test $? -eq 0 || add_warning 1 "Capitalize the subject line"
+  test $? -eq 0 || add_error 1 "Capitalize the subject line"
 
   # 4. Do not end the subject line with a period
   # ------------------------------------------------------------------------------
 
   [[ ${COMMIT_SUBJECT} =~ [^\.]$ ]]
-  test $? -eq 0 || add_warning 1 "Do not end the subject line with a period"
+  test $? -eq 0 || add_error 1 "Do not end the subject line with a period"
 
   # 5. Use the imperative mood in the subject line
   # ------------------------------------------------------------------------------
@@ -156,7 +156,7 @@ validate_commit_message() {
 
   for BLACKLISTED_WORD in "${IMPERATIVE_MOOD_BLACKLIST[@]}"; do
     [[ ${COMMIT_SUBJECT} =~ ^[[:blank:]]*$BLACKLISTED_WORD ]]
-    test $? -eq 0 && add_warning 1 "Use the imperative mood in the subject line, e.g 'fix' not 'fixes'" && break
+    test $? -eq 0 && add_error 1 "Use the imperative mood in the subject line, e.g 'fix' not 'fixes'" && break
   done
 
   # disable case insensitive match
@@ -170,7 +170,7 @@ validate_commit_message() {
   for i in "${!COMMIT_MSG_LINES[@]}"; do
     LINE_NUMBER=$((i+1))
     test "${#COMMIT_MSG_LINES[$i]}" -le 72 || [[ ${COMMIT_MSG_LINES[$i]} =~ $URL_REGEX ]]
-    test $? -eq 0 || add_warning $LINE_NUMBER "Wrap the body at 72 characters (${#COMMIT_MSG_LINES[$i]} chars)"
+    test $? -eq 0 || add_error $LINE_NUMBER "Wrap the body at 72 characters (${#COMMIT_MSG_LINES[$i]} chars)"
   done
 
   # 7. Use the body to explain what and why vs. how
@@ -183,13 +183,13 @@ validate_commit_message() {
 
   COMMIT_SUBJECT_WORDS=(${COMMIT_SUBJECT})
   test "${#COMMIT_SUBJECT_WORDS[@]}" -gt 1
-  test $? -eq 0 || add_warning 1 "Do no write single worded commits"
+  test $? -eq 0 || add_error 1 "Do no write single worded commits"
 
   # 9. Do not start the subject line with whitespace
   # ------------------------------------------------------------------------------
 
   [[ ${COMMIT_SUBJECT} =~ ^[[:blank:]]+ ]]
-  test $? -eq 1 || add_warning 1 "Do not start the subject line with whitespace"
+  test $? -eq 1 || add_error 1 "Do not start the subject line with whitespace"
 }
 
 #
@@ -210,10 +210,11 @@ while true; do
 
   validate_commit_message
 
-  # if there are no WARNINGS then we're good to break out of here
-  test ${#WARNINGS[@]} -eq 0 && exit 0;
+  # if there are no ERRORS then we're good to break out of here
+  test ${#ERRORS[@]} -eq 0 && exit 0;
 
-  display_warnings
+  display_errors
+
   exit 1;
 
 done
