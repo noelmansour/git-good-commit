@@ -16,10 +16,6 @@ Validates commit messages conform to six of [the seven rules of a great git comm
 8. Do no write single worded commits
 9. Do not start the subject line with whitespace
 
-Offers an interactive prompt if any of the rules are detected to be broken.
-
-![git-good-commit animated demo](demo.gif)
-
 ## Installation
 
 ### Single repository
@@ -45,39 +41,6 @@ The hook will now be present after any `git init` or `git clone`. You can [safel
 ---
 
 _If you're security conscious, you may be reasonably suspicious of [curling executable files](https://www.seancassidy.me/dont-pipe-to-your-shell.html). In this case you're on HTTPS throughout, and not piping directly to execution, so you can check contents and the hash against MD5 `32345e70572846c29f3a767c3dce492f` for v0.5.0._
-
-## Usage
-
-```sh
-echo "apple" > ./bar.txt
-git add fruits.txt
-
-# should warn you that the subject line is not capitalised, and offer an interactive prompt.
-git commit -m 'add fruits.txt'
-```
-
-### Options
-
-```
-e - edit commit message
-y - proceed with commit
-n - abort commit
-? - print help
-```
-
-## Configuration
-
-The default colour setting is `auto`, but the hook will use `git`'s `color.ui` config setting if defined. You override the colour setting for the hook with:
-
-```
-git config --global hooks.goodcommit.color "never"
-```
-
-Supported values are `always`, `auto`, `never` and `false`.
-
-## Dependencies
-
-None, other than Bash.
 
 ## Credits
 
