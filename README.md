@@ -40,6 +40,10 @@ The hook will now be present after any `git init` or `git clone`. You can [safel
 
 _If you're security conscious, you may be reasonably suspicious of [curling executable files](https://www.seancassidy.me/dont-pipe-to-your-shell.html). In this case you're on HTTPS throughout, and not piping directly to execution, so you can check contents and the hash against MD5 `32dd8bb7163fa44bde41e2a4b6329aa1` for latest from master._
 
+### CI
+
+`ci-hook.sh` can be used for CI builds. It behaves the same as `hook.sh` but simply exits on failure with a non-zero status code.
+
 ## Credits
 
 * http://chris.beams.io/posts/git-commit
