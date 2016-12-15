@@ -9,7 +9,6 @@
 # https://github.com/noelmansour/git-good-commit
 #
 
-COMMIT_MSG_FILE=".git/COMMIT_EDITMSG"
 COMMIT_MSG_LINES=
 ERRORS=
 EDITOR="$(git config core.editor)"
@@ -76,7 +75,7 @@ read_commit_message() {
     [[ $REPLY =~ ^# ]]
     test $? -eq 0 || COMMIT_MSG_LINES+=("$REPLY")
 
-  done < <(cat $COMMIT_MSG_FILE)
+  done < <(echo "$(git log --format=%B -n 1 HEAD)")
 }
 
 #
