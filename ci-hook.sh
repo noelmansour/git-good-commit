@@ -213,7 +213,7 @@ while true; do
   validate_commit_message
 
   # if there are no ERRORS then we're good to break out of here
-  test ${#ERRORS[@]} -eq 0 && echo -e "${WHITE}No errors found. Commit message is valid.${NC}" && exit 0;
+  test ${#ERRORS[@]} -eq 0 && echo -e "${WHITE}Commit message is valid. No errors found.${NC}" && exit 0;
 
   display_errors
 
