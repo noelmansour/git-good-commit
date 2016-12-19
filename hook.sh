@@ -217,7 +217,7 @@ while true; do
 
   display_errors
 
-  echo -en "${WHITE}Press any key to edit the commit message.${NC}";
+  echo -en "${WHITE}Press enter to edit the commit message.${NC}";
   read REPLY < "$TTY";
   $EDITOR "$COMMIT_MSG_FILE" < $TTY; continue
 
