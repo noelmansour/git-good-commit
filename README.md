@@ -38,7 +38,7 @@ The hook will now be present after any `git init` or `git clone`. You can [safel
 
 ---
 
-_If you're security conscious, you may be reasonably suspicious of [curling executable files](https://www.seancassidy.me/dont-pipe-to-your-shell.html). In this case you're on HTTPS throughout, and not piping directly to execution, so you can check contents and the hash against MD5 `32dd8bb7163fa44bde41e2a4b6329aa1` for latest from master._
+_If you're security conscious, you may be reasonably suspicious of [curling executable files](https://www.seancassidy.me/dont-pipe-to-your-shell.html). In this case you're on HTTPS throughout, and not piping directly to execution, so you can check contents and the hash against MD5 `d83e5fd56f473d4190d0e03e736b3c2f` for latest from master._
 
 ### CI
 
